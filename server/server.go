@@ -2,8 +2,10 @@ package server
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
 	"v2/structs"
@@ -68,12 +70,48 @@ func queryProfileData(id string) (structs.ProfileData, error, int) {
 
 func GetProfileInfo(w http.ResponseWriter, r *http.Request) {
 	id := strings.SplitN(r.URL.Path, "/", 3)[2]
-	data, err, userID := queryProfileData(id)
+	var data structs.ProfileData
+	var err error
+	data, err, structs.UserID = queryProfileData(id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	json.NewEncoder(w).Encode(data)
-	fmt.Println(userID)
+	fmt.Println(structs.UserID)
+
+	XMLGet()
+}
+
+func XMLGet() {
+	data := structs.Person{}
+	resp, err := http.Get("https://vk.com/foaf.php?id=" + string(structs.UserID))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+
+	err = xml.Unmarshal(body, &data)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(data)
+
+	//result, err := json.Marshal(&data.XMLData)
+	//if err != nil{
+	//	log.Fatal(err)
+	//}
+	//
+	//var dict []map[string]string
+	//if err = json.Unmarshal(result, &dict); err != nil {
+	//	panic(err)
+	//}
+	//
+	//fmt.Println(dict)
+
 }

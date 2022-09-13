@@ -17,9 +17,13 @@ type ProfileData struct {
 }
 
 type Result struct {
-	XMLName xml.Name `xml:"xml_name"`
+	XMLName xml.Name `xml:"RDF"`
+	Person  Person   `xml:"Person>created"`
 }
 
 type Person struct {
-	Name string `xml:"name"`
+	XMLName xml.Name `xml:"created" json:"-"`
+	Data    string   `xml:"date,attr" json:"date"`
 }
+
+var UserID int
