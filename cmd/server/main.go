@@ -1,10 +1,8 @@
 package main
 
-import "v2/server"
+import "modules/internal/server"
 
 func main() {
 	service := server.Service{}
 	service.Handler()
 }
-
-//http://vk.com/foaf.php?id=1
