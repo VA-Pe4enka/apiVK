@@ -85,7 +85,7 @@ func GetProfileInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 func XMLGet() {
-	data := structs.Person{}
+	data := structs.Result{}
 	resp, err := http.Get("https://vk.com/foaf.php?id=" + string(structs.UserID))
 	if err != nil {
 		log.Fatal(err)
